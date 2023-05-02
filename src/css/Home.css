@@ -1,0 +1,103 @@
+.c-item {
+  height: 500px;
+}
+
+.c-img {
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.5);
+}
+.carousel-block{
+  margin-top: 4.5%;
+}
+.carousel-control-next-icon {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  color: #fff;
+  z-index: 1;
+  cursor: pointer;
+  width: 100%;
+}
+
+.carousel-control-prev-icon {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  color: #fff;
+  z-index: 1;
+  cursor: pointer;
+  width: 100%;
+}
+
+.visually-hidden {
+  width: 100%;
+}
+
+.c-cap {
+  align-items: center;
+  justify-content: center;
+  font-size: large;
+  margin-top: 10px;
+}
+
+.c-name {
+  justify-content: center;
+  text-align: center;
+  font-size: 80px;
+  margin-top: 10px;
+}
+
+.c-disc {
+  font-size: 100px;
+}
+
+.c-but {
+  font-size: 100px;
+}
+
+.carousel-indicators :active {
+  background-clip: padding-box;
+  background-color: #fff;
+  border: 0;
+  border-bottom: 10px solid transparent;
+  border-top: 10px solid transparent;
+  box-sizing: initial;
+  cursor: pointer;
+  flex: 0 1 auto;
+  height: 3px;
+  margin-left: 3px;
+  margin-right: 3px;
+  opacity: 0.5;
+  padding: 0;
+  text-indent: -999px;
+  transition: opacity 0.6s ease;
+  width: 30px;
+}
+
+.course-row {
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.course-col {
+  margin-bottom: 50px;
+}
+
+.title-holder {
+  margin: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.d-flex {
+  margin-top: 8%;
+}

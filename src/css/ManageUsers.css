@@ -1,0 +1,56 @@
+.image-avatar{
+    width: 40px;
+    height: 40px;
+}
+
+.add-container{
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    margin: 3rem auto;
+    flex-direction:column;
+    margin-top: 8%;
+}
+
+.manage-courses{
+    margin-top:4%;
+    margin-right: 4%;
+}
+
+.btn{
+    margin-right:10px;
+}
+
+/* .bg {
+    background-image: url(../core/data/e247a4cad080ddc903b61bb0f516aaa3.jpg);
+    width: 100%;
+    background-size: cover;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  } */
+
+  /* .add-container{
+    box-shadow: 0px 5px 10px 0px rgba(43 45 114);
+    border-radius: 10%; 
+    padding: 40px;        
+  }
+  .add-container{
+    box-shadow: inset 0px 5px 10px 0px rgba(43 45 114);
+    border-radius: 10%;
+  }
+  /* .add-container:hover{
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px 2px rgba(0,255,255,0.7);
+  } 
+  .add-container:hover{
+    transform: translateY(5px);
+    box-shadow: inset 0px 10px 20px 2px rgba(43 45 114);
+    border-radius: 10%;
+  } */
+
+  .add-container{
+    box-shadow: 0px -5px 10px 0px rgba(0, 0, 0, 0.5)  
+  }
+
+
