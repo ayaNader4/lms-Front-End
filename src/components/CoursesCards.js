@@ -1,33 +1,3 @@
-/* import React from 'react';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import { Link } from 'react-router-dom';
-
-
-
-const CoursesCards = () => {
-  return (
-    <Card  style={{ width: '18rem' }}>
-      <Card.Img variant="top" src="https://wallpaperaccess.com/full/1704555.jpg" />
-      <Card.Body>
-        <Card.Title>DataScience Course</Card.Title>
-        <Card.Text>
-        Big Data's exciting and informative narrative is key to 
-        improved revenue streams and business capability.
-        
-        </Card.Text>
-        <Link className='btn btn-primary' to={'/CourseDetailsFI'}>Go to Course Details</Link>
-      </Card.Body>
-    </Card>
-  );
-}
-
-export default CoursesCards;
-
-
-
- */
-
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";

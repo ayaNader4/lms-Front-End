@@ -19,7 +19,7 @@ import Button from "react-bootstrap/Button";
 const FilterCourses = (props) => {
   const auth = getAuthUser();
   const [filterValue, setFilterValue] = useState({
-    type: "",
+    type: "",//active ,ava...
     loading: false,
     results: [],
     err: [],
@@ -32,17 +32,17 @@ const FilterCourses = (props) => {
   let av="btns";
   let all="btns";
   let p="btns";
-  if (filterValue.type === "/") {
-    url = "http://localhost:4000/courses";
+  if (filterValue.type === "") {
+    // url = "http://localhost:4000/courses";
     all+=" active"
   } else if (filterValue.type === "active") {
-    url = "http://localhost:4000/courses?type=active";
+    // url = "http://localhost:4000/courses?type=active";
     a+=" active";
   } else if (filterValue.type === "passed") {
-    url = "http://localhost:4000/courses?type=passed";
+    // url = "http://localhost:4000/courses?type=passed";
     p+=" active";
   } else if (filterValue.type === "available") {
-    url = "http://localhost:4000/courses?type=available";
+    // url = "http://localhost:4000/courses?type=available";
     av+=" active";
   }
   let handleButtons = (e) => {
@@ -56,7 +56,7 @@ const FilterCourses = (props) => {
     axios
       .get(url, {
         headers: { token: auth.token },
-        params: { search: search },
+        params: { search: search ,type:filterValue.type },
       })
       .then((response) => {
         setFilterValue({
@@ -70,7 +70,7 @@ const FilterCourses = (props) => {
         setFilterValue({
           ...filterValue,
           loading: false,
-          err: errors.response.data.errors,
+          err: errors.response.data.message,
         });
       });
   }, [filterValue.reload]);
@@ -99,13 +99,13 @@ const FilterCourses = (props) => {
       <div className="myBtnContainer">
         <form onSubmit={handleButtons}>
           <button
-            className={all}
+            className={all}//btn active
             value="All"
             type="submit"
             onClick={() =>
               setFilterValue({
                 ...filterValue,
-                type: "/",
+                type: "",
               })
             }
           >

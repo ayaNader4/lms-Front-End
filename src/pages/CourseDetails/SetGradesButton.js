@@ -7,11 +7,10 @@ import { useParams } from "react-router-dom";
 import { getAuthUser } from "../../core/helper/Storage";
 import axios from "axios";
 
-const SetGradesButton = (user_id, courseid) => {
-  console.log(user_id, courseid);
+const SetGradesButton = (props) => {
+  console.log(props.user_id, props.assignments);
   let { id } = useParams();
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const auth = getAuthUser();
@@ -25,8 +24,8 @@ const SetGradesButton = (user_id, courseid) => {
   // assignments data
   const [assignments, setAssignments] = useState({
     loading: true,
-    course_result: [],
-    assignments_result: [],
+    grades: [],
+    total: null,
     err: null,
     reload: 0,
   });
@@ -36,16 +35,15 @@ const SetGradesButton = (user_id, courseid) => {
     setAssignments({ ...assignments, loading: true });
     axios({
       method: method,
-      url: url + courseid,
+      url: url + id,
       headers: { token: token },
-      params: { user_id: user_id },
+      params: { user_id: props.user_id },
     })
       .then((response) => {
         // console.log(response);
-
         setAssignments({
           ...assignments,
-          assignments_result: response.data.assignments,
+          grades: response.data.assignments,
           loading: false,
         });
       })
@@ -57,95 +55,136 @@ const SetGradesButton = (user_id, courseid) => {
         });
       });
   }, [assignments.reload]);
-  console.log(assignments);
+  // console.log(assignments);
 
+  const [assignment, setAssignment] = useState({
+    id: "",
+    name: "",
+    details: "",
+    grade: "",
+    err: "",
+    loading: false,
+    success: null,
+  });
+
+  // update assignment
+  const updateAssignment = (e) => {
+    setAssignment({ ...assignment, loading: true });
+    e.preventDefault();
+    console.log(assignment);
+    const rawData = {
+      id: assignment.id,
+      name: assignment.name,
+      details: assignment.details,
+      grade: assignment.grade,
+    };
+    // const new_grades = arr.map(v => v.value)
+    axios
+      .put(
+        "http://127.0.0.1:4000/instructor/students/course-students/assignments/student-grade/" +
+          id,
+        { grade: parseInt(assignment.grade) },
+        {
+          headers: {
+            token: auth.token,
+            "Content-Type": "application/json",
+          },
+          params: { user_id: props.user_id, assignment_id: assignment.id },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        setAssignments({
+          ...assignments,
+          reload: assignments.reload + 1,
+          err: null,
+          loading: false,
+          success: "Grades updated successfully!",
+        });
+        setAssignment({
+          ...assignment,
+          err: null,
+          loading: false,
+          success: "Grade updated successfully!",
+        });
+      })
+      .catch((errors) => {
+        setAssignments({
+          ...assignments,
+          loading: false,
+          success: null,
+          err: errors.response.data.errors,
+        });
+      });
+  };
   return (
     <>
-      <Button variant="dark" onClick={handleShow}>
+      <Button
+        variant="dark"
+        value={id}
+        onClick={(e) => {
+          setAssignments({
+            ...assignments,
+            id: e.target.value,
+          });
+          handleShow();
+        }}
+      >
         SetGrades
       </Button>
-
       <Modal className="walaa" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>SetGrades</Modal.Title>
+          <Modal.Title>Modify Grades</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            {/*  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">  */}
-            {/* <Form.Label>MidTerm Grade</Form.Label> */}
-            {/*  <Form.Control
-               /*  type="email" *
-                 placeholder="MidTerm Grade" /> */}
-            {/*  /* autoFocus */}
-
-            {/*   /* </Form.Group>  */}
-
-            {/* 
-
-
-           {/*  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1"> *
-              <Form.Label>MidTerm Grade</Form.Label>
-              <Form.Control
-               /*  type="email" *
-                 placeholder="MidTerm Grade" >
-                /* autoFocus *
-              />
-           {/*  </Form.Group> *
-                 
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Assigments Grade</Form.Label>
-              <Form.Control
-               /*  type="email" *
-                placeholder="Assigments Grade"
-                /* autoFocus *
-              />
-            </Form.Group>
-
-
-
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Project Grade</Form.Label>
-              <Form.Control
-               /*  type="email" *
-                placeholder="Project Grade"
-                /* autoFocus *
-              />
-            </Form.Group>
-
-
-
-
-
-
-
-
-
-
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Final Grade</Form.Label>
-              <Form.Control /* as="Final grade" *rows={1} />
-            </Form.Group>
-
-
-
-
-             */}
+          <Form onSubmit={updateAssignment}>
+            {assignments.grades.map((oneGrade) => (
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+                key={oneGrade.id}
+              >
+                <Form.Label>{oneGrade.name}</Form.Label>
+                <Form.Control
+                  type="number"
+                  step="1"
+                  placeholder="Grade"
+                  defaultValue={oneGrade.grade}
+                  onChange={(e) => {
+                    oneGrade.grade = parseInt(e.target.value);
+                    setAssignments({
+                      ...assignments,
+                    });
+                  }}
+                  /* autoFocus */
+                />
+                <Button
+                  type="submit"
+                  variant="dark"
+                  onClick={(e) => {
+                    setAssignments({
+                      ...assignments,
+                      reload: assignments.reload + 1,
+                    });
+                    setAssignment({
+                      ...assignment,
+                      id: oneGrade.id,
+                      grade: oneGrade.grade,
+                    });
+                  }}
+                >
+                  Save Changes
+                </Button>
+              </Form.Group>
+            ))}
+            <Modal.Footer>
+              <Button type="submit" variant="dark" onClick={handleClose}>
+                Close
+              </Button>
+            </Modal.Footer>
           </Form>
         </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="dark" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="dark" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      </Modal>{" "}
     </>
   );
 };

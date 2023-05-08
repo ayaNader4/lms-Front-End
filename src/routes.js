@@ -15,6 +15,8 @@ import UpdateCourses from "./pages/manageCourses/UpdateCourses";
 import UpdateUsers from "./pages/manageUsers/UpdateUsers";
 import Addstudent from "./pages/manageUsers/AddStudent";
 import AddInstructor from "./pages/manageUsers/AddInstructor";
+import AddAssignment from "./pages/CourseDetails/AddAssignment";
+import Admin from "./middleware/Admin";
 
 export const routes = createBrowserRouter([
   {
@@ -46,12 +48,16 @@ export const routes = createBrowserRouter([
         path: "/setassigments/:id",
         element: <SetAssigments />,
       },
+      {
+        path: "/add-assignment/:id",
+        element: <AddAssignment />,
+      },
 
       {
         path: "/help",
         element: <Help />,
       },
-      
+
       {
         path: "/manage-users",
         children: [

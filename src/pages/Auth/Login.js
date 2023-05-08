@@ -6,6 +6,7 @@ import Image from "../../core/data/Free Vector _ Polygon lines background.jpeg";
 import axios from "axios";
 import { setAuthUser } from "../../core/helper/Storage";
 import { useNavigate } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,13 +14,14 @@ const Login = () => {
     email: "",
     password: "",
     loading: false,
-    err: [],
+    err: "",
+    success: null,
   });
 
   const LoginFun = (e) => {
     console.log(login);
 
-    e.preventDefault(); 
+    e.preventDefault();
     setLogin({ ...login, loading: true, err: [] });
     console.log("login fun 1");
     axios
@@ -27,9 +29,14 @@ const Login = () => {
         email: login.email,
         password: login.password,
       })
-      .then((response) => {
+      .then((response) => {//user_data
         console.log(response);
-        setLogin({ ...login, loading: false, err: [] });
+        setLogin({
+          ...login,
+          loading: false,
+          err: "",
+          success: "logined successfully",
+        });
         setAuthUser(response.data);
         navigate("/");
       })
@@ -37,7 +44,8 @@ const Login = () => {
         setLogin({
           ...login,
           loading: false,
-          err: errors.response.data.errors,
+          err: "E-mail or password not found",
+          success: null,
         });
       });
   };
@@ -52,7 +60,16 @@ const Login = () => {
           {/*  <img className='bg'  src={Image}> </img> */}
           <div className="wrap-login100">
             <div className="login100-form-title"> LOG IN</div>
-
+            {login.err && (
+              <Alert variant="danger" className="p-2">
+                {login.err}
+              </Alert>
+            )}
+            {login.success && (
+              <Alert variant="success" className="p-2">
+                {login.success}
+              </Alert>
+            )}
             {/* {login.err.map((error)=>({error.message}))} */}
 
             <form className="login100-form validate-form" onSubmit={LoginFun}>

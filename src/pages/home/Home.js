@@ -13,11 +13,11 @@ import Alert from "react-bootstrap/Alert";
 
 import FilterCourses from "../../components/FilterCourses";
 const Home = () => {
-  const auth = getAuthUser();
+  const auth = getAuthUser();//user_data//token
   let token = null;
   if (auth) token = auth.token;
 
-  let url = "http://localhost:4000/courses";
+  let url = "http://localhost:4000/courses";//student
   if (auth) {
     if (auth.type === "instructor") {
       url = "http://localhost:4000/instructor/manage/courses";
@@ -25,7 +25,7 @@ const Home = () => {
       url = "http://localhost:4000/courses";
     }
   }
-
+  console.log("auth", auth);
   const [courses, setCourses] = useState({
     loading: true,
     results: [],
@@ -44,14 +44,13 @@ const Home = () => {
         setCourses({ ...courses, results: response.data, loading: false });
       })
       .catch((errors) => {
-        console.log(errors);
         setCourses({
           ...courses,
           loading: false,
           err: errors.response.data.message,
         });
       });
-  }, [courses.reload]);
+  }, [courses.reload]);//0+1+1
 
   const searchCourses = (e) => {
     e.preventDefault();
@@ -75,11 +74,10 @@ const Home = () => {
 
       {courses.loading === false && courses.err == null && (
         <>
-        
           {auth.type === "student" && (
             <>
               <CarouselPage />
-              <FilterCourses  />
+              <FilterCourses />
             </>
           )}
           <Container fluid>
@@ -93,15 +91,15 @@ const Home = () => {
                       code={course.code}
                       description={course.description}
                       image_url={course.image_url}
-                      id={course.id}
+                      id={course.course_id}
                     />
                   ))}
                 </>
               )}
               {auth.type === "admin" && (
                 <>
-                <FilterCourses  />
-              </>
+                  <FilterCourses />
+                </>
               )}
             </Row>
           </Container>

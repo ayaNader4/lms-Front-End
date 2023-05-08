@@ -6,12 +6,12 @@ import Button from "react-bootstrap/Button";
 import SetGradesButton from "./SetGradesButton";
 import SetAssigments from "./SetAssigments";
 import TableGrades from "./TableGrades";
-import { Grades } from "./Grades";
 import Image from "../../core/data/a652bd3cfb5e4378d94d5fa17627dae1.jpg";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import { getAuthUser } from "../../core/helper/Storage";
+import { Link } from "react-router-dom";
 
 const CourseDetailsFI = () => {
   const [show, setShow] = useState(false);
@@ -22,8 +22,8 @@ const CourseDetailsFI = () => {
   let token = null;
   let { id } = useParams();
   if (auth) token = auth.token;
-
-  let url = "http://localhost:4000/course/";
+  console.log(token);
+  let url = "http://localhost:4000/course/";//student
   let method = "get";
   if (auth.type === "instructor") {
     method = "put";
@@ -35,11 +35,14 @@ const CourseDetailsFI = () => {
     course_result: [],
     assignments_result: [],
     students_result: [],
+    passed: "",
     err: null,
   });
 
   useEffect(() => {
     setCourse({ ...course, loading: true });
+
+    console.log(url + id);
     axios({
       method: "get",
       url: url + id,
@@ -53,8 +56,10 @@ const CourseDetailsFI = () => {
           course_result: response.data.course,
           assignments_result: response.data.assignments,
           students_result: response.data.students,
+          passed: response.data.isPassed,
           loading: false,
         });
+        console.log(course);
       })
       .catch((errors) => {
         setCourse({
@@ -65,6 +70,41 @@ const CourseDetailsFI = () => {
       });
   }, []);
 
+  // create assignment
+  const registerCourse = (e) => {
+    e.preventDefault();
+
+    setCourse({ ...course, loading: true });
+    axios
+      .post(
+        "http://127.0.0.1:4000/course/" + id,
+        {},
+        {
+          headers: {
+            token: token,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        setCourse({
+          ...course,
+          err: null,
+          loading: false,
+          success: "Course registered successfully!",
+          reload: course.reload + 1,
+        });
+      })
+      .catch((errors) => {
+        setCourse({
+          ...course,
+          loading: false,
+          success: null,
+          err: errors.response.data.errors,
+        });
+      });
+  };
+  console.log(auth.type);
   return (
     <div className="course-details-container p-5  bg-white text-black">
       {/* Loader */}
@@ -96,7 +136,66 @@ const CourseDetailsFI = () => {
         </div>
 
         {/* student view  */}
-        {auth.type === "student" && <> </>}
+        {auth.type === "student" && course.passed && (
+          <>
+            <div className="sb">
+              <Table striped bordered hover variant="dark">
+                <thead>
+                  <tr>
+                    <th>Total Grade</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{course.passed.total_grade}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </div>
+          </>
+        )}
+
+        {auth.type === "student" &&
+          !course.passed &&
+          !course.assignments_result && (
+            <>
+              <Link
+                className="btn btn-primary mb-5"
+                onClick={(e) => {
+                  registerCourse(e);
+                }}
+              >
+                Enroll Now
+              </Link>
+            </>
+          )}
+
+        {auth.type === "student" &&
+          course.passed != "passed" &&
+          course.assignments_result && (
+            <>
+              <div className="sb">
+                <Table striped bordered hover variant="dark">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Details</th>
+                      <th>Grade</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {course.assignments_result.map((grade) => (
+                      <tr key={grade.id}>
+                        <td>{grade.name}</td>
+                        <td>{grade.details}</td>
+                        <td>{grade.grade}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            </>
+          )}
 
         {/* instructor view  */}
         {auth.type === "instructor" && (
@@ -110,7 +209,7 @@ const CourseDetailsFI = () => {
             </Button>{" "}
             <TableGrades
               students={course.students_result}
-              course_id={course.course_result.id}
+              assignments={course.assignments_result}
             />
           </>
         )}

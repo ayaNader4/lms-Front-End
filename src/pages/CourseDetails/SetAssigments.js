@@ -10,8 +10,8 @@ import { useParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import { getAuthUser } from "../../core/helper/Storage";
 import axios from "axios";
-import AssignmentTable from "./AssignmentTable";
 import Alert from "react-bootstrap/Alert";
+import { Link } from "react-router-dom";
 // import { ModalN, ModalOpenButton, ModalContents } from "../../core/helper/modal";
 
 const SetAssigments = () => {
@@ -26,7 +26,6 @@ const SetAssigments = () => {
 
   let url = "http://127.0.0.1:4000/instructor/manage/courses/";
   let method = "get";
-
   // assignments data
   const [assignments, setAssignments] = useState({
     loading: true,
@@ -133,9 +132,10 @@ const SetAssigments = () => {
   };
 
   // update assignment
-  const updateAssignment = (assignment_id) => {
+  const updateAssignment = (e) => {
     setAssignment({ ...assignment, loading: true });
-
+    console.log(assignment);
+    e.preventDefault();
     const rawData = {
       name: assignment.name,
       details: assignment.details,
@@ -147,7 +147,7 @@ const SetAssigments = () => {
           token: auth.token,
           "Content-Type": "application/json",
         },
-        params: { assignment_id: assignment_id },
+        params: { assignment_id: assignment.id },
       })
       .then((response) => {
         console.log(response);
@@ -166,10 +166,11 @@ const SetAssigments = () => {
           ...assignment,
           loading: false,
           success: null,
-          err: errors.response.data.errors,
         });
       });
   };
+
+  console.log(assignments);
   return (
     <>
       <div className="course-details-container p-5  bg-white text-black">
@@ -203,92 +204,14 @@ const SetAssigments = () => {
           </div>
           {/* add assignment button  */}
           <div className="sb">
-            {" "}
-            <Button
-              className="right"
-              variant="dark"
-              data-toggle="modal"
-              data-target="add-modal"
-              onClick={handleShow}
+            <Link
+              to={{
+                pathname: "/add-assignment/"+id,
+              }}
+              className="btn btn-dark"
             >
               Add Assignment
-            </Button>
-            <Modal
-              id="add-modal"
-              className="walaa"
-              show={show}
-              onHide={handleClose}
-            >
-              <Modal.Header closeButton>
-                <Modal.Title>Add Assignment</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Form onSubmit={createAssignment}>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Name"
-                      required
-                      value={assignment.name}
-                      onChange={(e) =>
-                        setAssignment({ ...assignment, name: e.target.value })
-                      }
-                    />
-                    {/*  /* autoFocus */}
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>Details</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Details"
-                      required
-                      value={assignment.details}
-                      onChange={(e) =>
-                        setAssignment({
-                          ...assignment,
-                          details: e.target.value,
-                        })
-                      }
-
-                      /* autoFocus */
-                    />
-                  </Form.Group>
-                  <Form.Group
-                    className="mb-3"
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label>Grade</Form.Label>
-                    <Form.Control
-                      type="number"
-                      step="1"
-                      placeholder="Grade"
-                      required
-                      value={assignment.total_grade}
-                      onChange={(e) =>
-                        setAssignment({
-                          ...assignment,
-                          total_grade: e.target.value,
-                        })
-                      }
-                      /* autoFocus */
-                    />
-                  </Form.Group>
-
-                  <Modal.Footer>
-                    <Button type="submit" variant="dark">
-                      Save Changes
-                    </Button>
-                  </Modal.Footer>
-                </Form>
-              </Modal.Body>
-            </Modal>{" "}
+            </Link>
           </div>
 
           {assignment.err && (
@@ -328,17 +251,103 @@ const SetAssigments = () => {
                     >
                       Delete
                     </Button>
-
                     <Button
                       /*   role="upd" */
                       className="ml-20"
                       variant="dark"
-                      onClick={handleShow}
                       data-toggle="modal"
                       data-target="#update-modal"
+                      onClick={(e) => {
+                        setAssignment({
+                          ...assignment,
+                          id: a.id,
+                          name: a.name,
+                          details: a.details,
+                          total_grade: a.total_grade,
+                        });
+                        handleShow();
+                      }}
                     >
                       Update
                     </Button>
+                    <Modal
+                      id="add-modal"
+                      className="walaa"
+                      show={show}
+                      onHide={handleClose}
+                    >
+                      <Modal.Header closeButton>
+                        <Modal.Title>Update Assignment</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <Form onSubmit={updateAssignment}>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="exampleForm.ControlInput1"
+                          >
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="Name"
+                              required
+                              defaultValue={assignment.name}
+                              onChange={(e) =>
+                                setAssignment({
+                                  ...assignment,
+                                  name: e.target.value,
+                                })
+                              }
+                            />
+                          </Form.Group>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="exampleForm.ControlInput1"
+                          >
+                            <Form.Label>Details</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="Details"
+                              required
+                              defaultValue={assignment.details}
+                              onChange={(e) =>
+                                setAssignment({
+                                  ...assignment,
+                                  details: e.target.value,
+                                })
+                              }
+
+                              /* autoFocus */
+                            />
+                          </Form.Group>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="exampleForm.ControlInput1"
+                          >
+                            <Form.Label>Grade</Form.Label>
+                            <Form.Control
+                              type="number"
+                              step="1"
+                              placeholder="Grade"
+                              required
+                              defaultValue={assignment.total_grade}
+                              onChange={(e) =>
+                                setAssignment({
+                                  ...assignment,
+                                  total_grade: e.target.value,
+                                })
+                              }
+                              /* autoFocus */
+                            />
+                          </Form.Group>
+
+                          <Modal.Footer>
+                            <Button type="submit" variant="dark">
+                              Save Changes
+                            </Button>
+                          </Modal.Footer>
+                        </Form>
+                      </Modal.Body>
+                    </Modal>{" "}
                   </td>
                 </tr>
               ))}

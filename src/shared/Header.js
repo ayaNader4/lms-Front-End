@@ -15,11 +15,17 @@ const Header = () => {
 
   const Logout = () => {
     removeAuthUser();
-    navigate("/");
+    navigate("/login");
   };
+
   return (
     <header className="main-header">
       <Navbar bg="light" expand="lg">
+      
+        <div className="logo"> 
+        <img src = "76-769067_black-and-white-four-leaf-clover-black-and-removebg-preview (1) (2).png" alt="logo"   />
+        </div> 
+       
         <Container>
           <Navbar.Brand href={"/"}>Barseem</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -28,6 +34,7 @@ const Header = () => {
               <Link className="nav-link" to={"/"}>
                 Home
               </Link>
+              
               {/* <Link className='nav-link' to={'/instructor'}>Courses</Link> */}
               <Link className="nav-link" to={"/help"}>
                 Help

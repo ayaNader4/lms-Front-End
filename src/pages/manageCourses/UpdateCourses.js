@@ -7,7 +7,7 @@ import DropDownList from '../../components/DropDownList';
 
 const UpdateCourses = () => {
     return (
-        <div className='add-container'>
+        <div className='add-container'> 
             <h1>Update Course</h1>
             <Alert variant="danger" className='p-2'>
                 failed to send

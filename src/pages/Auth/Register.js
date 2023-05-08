@@ -6,17 +6,19 @@ import Image from "../../core/data/Free Vector _ Polygon lines background.jpeg";
 import axios from "axios";
 import { setAuthUser } from "../../core/helper/Storage";
 import { useNavigate } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
 
 const Register = () => {
   const navigate = useNavigate();
- 
+
   const [register, setRegister] = useState({
     name: "",
     email: "",
     password: "",
     phone: "",
     loading: false,
-    err: [],
+    err: "",
+    success: null,
   });
 
   const RegisterFun = (e) => {
@@ -33,7 +35,12 @@ const Register = () => {
       })
       .then((response) => {
         console.log(response);
-        setRegister({ ...register, loading: false, err: [] });
+        setRegister({
+          ...register,
+          loading: false,
+          err: "",
+          success: "Register Successfully",
+        });
         setAuthUser(response.data);
         navigate("/");
       })
@@ -41,7 +48,8 @@ const Register = () => {
         setRegister({
           ...register,
           loading: false,
-          err: errors.response.data.errors,
+          err: "E-mail is not found",
+          success: null,
         });
       });
   };
@@ -61,7 +69,16 @@ const Register = () => {
 					</span> */}
 
                 <span className="login100-form-title ">REGISTER</span>
-
+                {register.err && (
+                  <Alert variant="danger" className="p-2">
+                    {register.err}
+                  </Alert>
+                )}
+                {register.success && (
+                  <Alert variant="success" className="p-2">
+                    {register.success}
+                  </Alert>
+                )}
                 <div
                   className="wrap-input100 validate-input"
                   // data-validate="Enter username"

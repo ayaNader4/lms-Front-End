@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import "../../css/ManageUsers.css";
 import axios from "axios";
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 import { getAuthUser } from "../../core/helper/Storage";
 
 const AddInstructor = () => {
@@ -18,6 +20,19 @@ const AddInstructor = () => {
     err: "",
     success: null,
   });
+  const [courses, getCourses] = useState({
+    loading: true,
+    results: [],
+    err: null,
+    reload: 0,
+  });
+  const handleSelect = (evtKey, evt) => {
+    // Get the selectedIndex in the evtKey variable
+    console.log(evtKey);
+    if (evtKey !== "") 
+     setInstructor({ ...instructor, courses: evtKey });
+    // console.log(evt);
+  };
   const instructorFun = (e) => {
     e.preventDefault();
     setInstructor({ ...instructor, loading: true, err: [] });
@@ -45,7 +60,7 @@ const AddInstructor = () => {
         });
       })
       .catch((errors) => {
-        setInstructor({
+        setInstructor({ 
           ...instructor,
           loading: false,
           err: errors.response.data.message,
@@ -53,6 +68,25 @@ const AddInstructor = () => {
         });
       });
   };
+  useEffect(() => {
+    getCourses({ ...courses, loading: true });
+    axios
+      .get("http://localhost:4000/admin/courses/courses", {
+        headers: { token: auth.token },
+      })
+      .then((response) => {
+        console.log(response);
+        getCourses({ ...courses, results: response.data, loading: false });
+      })
+      .catch((errors) => {
+        console.log(errors);
+        getCourses({
+          ...courses,
+          loading: false,
+          err: errors.response.data.message,
+        });
+      });
+  }, [courses.reload]);
   return (
     <div className="add-container">
       <h1>Add New Instructor</h1>
@@ -103,15 +137,21 @@ const AddInstructor = () => {
             onChange={(e) => setInstructor({ ...instructor, password: e.target.value })}
           />
         </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control
-            type="text"
-            placeholder="Course Name"
-            required
-            value={instructor.courses}
-            onChange={(e) => setInstructor({ ...instructor, courses: e.target.value })}
-          />
-        </Form.Group>
+        <div>
+            <DropdownButton
+              id="dropdown-basic-button "
+              variant="secondary"
+              title="Course"
+              onSelect={handleSelect}
+            >
+              {courses.results.map((course) => (
+                <Dropdown.Item eventKey={course.name}>
+                  {course.name}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
+            
+          </div>
         <Button className="btn btn-dark w-90" variant="primary" type="submit">
           Add
         </Button>

@@ -204,16 +204,7 @@ const SetAssigmentsButton = (modalMode, title) => {
                 /* autoFocus */
               />
             </Form.Group>
-            {/*             
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Final Grade</Form.Label>
-              <Form.Control    rows={1}  />
-            </Form.Group>
-  */}
-
+            
             <Modal.Footer>
               <Button type="submit" variant="dark">
                 Save Changes

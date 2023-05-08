@@ -1,4 +1,4 @@
-import React ,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
@@ -9,14 +9,14 @@ import { getAuthUser } from "../../core/helper/Storage";
 
 const UpdateUsers = () => {
   let { id } = useParams();
-  let url="http://localhost:4000/admin/manage/update-instructor/"
+  let url = "http://localhost:4000/admin/manage/update-instructor/";
   const auth = getAuthUser();
   const [instructor, setInstructor] = useState({
     name: "",
     password: "",
     phone: "",
-    old_course:"",
-    new_course:"",
+    old_course: "",
+    new_course: "",
     loading: false,
     err: "",
     success: null,
@@ -25,13 +25,14 @@ const UpdateUsers = () => {
     e.preventDefault();
     setInstructor({ ...instructor, loading: true, err: [] });
     axios
-      .put(url+id,
+      .put(
+        url + id,
         {
           name: instructor.name,
           password: instructor.password,
           phone: instructor.phone,
           old_course: instructor.old_course,
-          new_course:instructor.new_course,
+          new_course: instructor.new_course,
         },
         {
           headers: { token: auth.token },
