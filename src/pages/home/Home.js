@@ -48,7 +48,7 @@ const Home = () => {
         setCourses({
           ...courses,
           loading: false,
-          err: "Something went wrong, please check the course name entered",
+          err: errors.response.data.message,
         });
       });
   }, [courses.reload]);
@@ -75,10 +75,7 @@ const Home = () => {
 
       {courses.loading === false && courses.err == null && (
         <>
-          {/* search bar  */}
-
-          {/* list courses */}
-
+        
           {auth.type === "student" && (
             <>
               <CarouselPage />
@@ -113,7 +110,7 @@ const Home = () => {
 
       {/* error handling  */}
       {courses.loading === false && courses.err != null && (
-        <Alert variant="danger" className="p-2">
+        <Alert variant="danger" className="p-2 mt-5">
           {courses.err}
         </Alert>
       )}
